@@ -34,7 +34,7 @@
         };
 
         const waitTillComplete = (callback) => {
-            fetch("/api/query", {
+            fetch("/api/in_request", {
                 method: "POST"
             }).then(response => {
                 if (!response.ok) {
@@ -62,7 +62,7 @@
 
         const downloadAudio = () => {
             const link = document.createElement("a");
-            link.href = "/api/audio";
+            link.href = "/api/get_audio";
             link.download = "tts_output.wav";
             link.target = "_blank";
             document.body.appendChild(link);

@@ -40,11 +40,11 @@ def flaskThreadMain():
         InProgressRequest = flask.request.get_data(as_text=True)
         return "",200
 
-    @app.route("/api/query", methods=["POST"])
+    @app.route("/api/in_request", methods=["POST"])
     def api_query():
-        return str(InProgressRequest == None),200
+        return str(InProgressRequest != None),200
 
-    @app.route("/api/audio")
+    @app.route("/api/get_audio")
     def api_audio():
         if InProgressRequest != None:
             return "A request is currently modifying that file.",500
