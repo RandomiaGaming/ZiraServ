@@ -1,0 +1,81 @@
+<html>
+
+<head>
+    <title>ZiraServ</title>
+</head>
+
+<body>
+    <h2>ZiraServ v1.0.0</h2>
+    <textarea id="input" rows="30" cols="75" placeholder="Paste text here to have it read aloud..."></textarea>
+    <br />
+    <br />
+    <button onclick="speek()">Speek</button>
+</body>
+
+<script>
+    function speek() {
+        const input = document.querySelector("#input").value;
+
+        const sendSpeekRequest = (input, callback) => {
+            fetch("/api/speek", {
+                method: "POST",
+                headers: { "Content-Type": "test/plain" },
+                body: input
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error code ${response.status}.`);
+                }
+                callback();
+            }).catch(error => {
+                const errorMessage = `ERROR: ${error.message}`;
+                console.error(errorMessage);
+                alert(errorMessage);
+            });
+        };
+
+        const waitTillComplete = (callback) => {
+            fetch("/api/query", {
+                method: "POST"
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error code ${response.status}.`);
+                }
+                response.text().then(responseText => {
+                    if (responseText == "False") {
+                        callback();
+                    } else {
+                        setTimeout(() => {
+                            waitTillComplete(callback);
+                        }, 1000);
+                    }
+                }).catch(error => {
+                    const errorMessage = `ERROR: ${error.message}`;
+                    console.error(errorMessage);
+                    alert(errorMessage);
+                });
+            }).catch(error => {
+                const errorMessage = `ERROR: ${error.message}`;
+                console.error(errorMessage);
+                alert(errorMessage);
+            });
+        };
+
+        const downloadAudio = () => {
+            const link = document.createElement("a");
+            link.href = "/api/audio";
+            link.download = "tts_output.wav";
+            link.target = "_blank";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        };
+
+        sendSpeekRequest(input, () => {
+            waitTillComplete(() => {
+                downloadAudio();
+            });
+        });
+    }
+</script>
+
+</html>
