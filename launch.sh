@@ -11,7 +11,7 @@ qemu-system-x86_64 \
   -m 4G \
   -drive file=./disk.img,format=raw \
   -cdrom ./win10.iso \
-  -display gtk -vga std \
-  -usb -device usb-tablet \
+  -display sdl -vga std \
+  -audiodev pa,id=snd0,out.frequency=48000 -device ich9-intel-hda -device hda-output,audiodev=snd0 \
   -device rtl8139,netdev=net0 -netdev user,id=net0,hostfwd=tcp::41875-:41875 \
   -name "TTSVM"
